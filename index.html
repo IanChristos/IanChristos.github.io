@@ -1,19 +1,80 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="widht=device-widht, initial-scale=1.0">
-    <tittle>Mary Smith | Creative Designer</tittle>
-    <meta name="description" content="Hi I`m Mary, a UI & UX designer based in Dublin. 
-    Mobile and Responsive Web Design, eCommerce Websites, Branding and Logo Design.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+
+        @layer base {
+            body {
+                @apply font-serif p-2;
+            }
+        h1 {
+            @apply text-[1.5em] font-bold my-[0.60em];
+        }
+        h2 {
+             @apply text-[1.2em] font-bold my-[0.73em];
+        }
+        h3 {
+             @apply text-[1.17em] font-bold my-[1em];
+        }
+        p {
+            @apply my-4;
+        }
+        a {
+            @apply text-blue-700 underline;
+        }
+            }
+    </style>
+
+    <title>Mary Smith | Creative Designer</title>
+
+    <meta
+        name="description"
+        content="Hi, I'm Mary, a UI & UX designer based in Dublin. Mobile and Responsive Web Design, eCommerce Websites, Branding and Logo Design."
+    >
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        <style type="text/tailwindcss">
+            
+        </style>
+
+
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/img/favicons/apple-touch-icon.png">    
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicons/favicon-32x32.png">    
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicons/favicon-16x16.png">    
+    <link rel="manifest" href="assets/img/favicons/site.webmanifest">
+
 </head>
 
 <body>
 
-    <h1>Hi, I`m Mary Smith</h1>
+    <h1>Hi, I'm Mary Smith</h1>
+
     <h2>Web / UI Designer</h2>
-    <p>I created this website to showcase some of my recent web design work</p>
-    <p><a href="exercises/page-1.html">A Tale of Two Cities</a></p>
+
+    <p>I created this website to showcase some of my recent web design work.</p>
+
+    <h3>Sample Web Pages</h3>
+
+    <p>
+        <a href="exercises/page-1.html">A Tale of Two Cities</a>
+    </p>
+
+    <p>
+        <a href="exercises/page-2.html">Purple Rain</a>
+    </p>
+
+    <p>
+        <a href="exercises/page-3.html">Web Page with Sections</a>
+    </p>
+    <p>
+        <a href="exercises/page-4.html">Vincent van Gogh</a> 
+    </p> 
+<p>
+    <a href="exercises/page-5.html">Irish Tourism</a>
+</p>
 
 </body>
-</head>
+</html>
