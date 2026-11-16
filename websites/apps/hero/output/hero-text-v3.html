@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Customisable hero section with typography and color palette controls.">
+  <title>Hero Section Editor</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <style type="text/tailwindcss">
+    .hero {
+      @apply flex items-center justify-center px-6 py-16 md:px-12 md:py-24;
+    }
+
+    .hero-content {
+      @apply w-full max-w-5xl;
+    }
+
+    .hero h1 {
+      @apply text-4xl font-bold leading-tight tracking-tight sm:text-5xl md:text-6xl;
+      overflow-wrap: anywhere;
+    }
+
+    .hero h2 {
+      @apply mt-6 max-w-3xl text-lg leading-relaxed sm:text-xl md:text-2xl;
+      overflow-wrap: anywhere;
+    }
+
+    .hero-centre .hero-content {
+      @apply mx-auto text-center;
+    }
+
+    .hero-centre h1,
+    .hero-centre h2 {
+      @apply mx-auto text-center;
+    }
+
+    .hero-min-height {
+      @apply min-h-[480px] md:min-h-[85vh];
+    }
+
+    /* Named font effect classes */
+    .hero-h1-sans {
+      @apply font-sans;
+    }
+
+    .hero-h1-serif {
+      @apply font-serif;
+    }
+
+    .hero-h2-sans {
+      @apply font-sans;
+    }
+
+    .hero-h2-serif {
+      @apply font-serif;
+    }
+
+    /* Editor controls */
+    .control-panel {
+      @apply mx-auto w-full max-w-5xl space-y-6 p-6;
+    }
+
+    .effect-group {
+      @apply rounded-xl border border-slate-200 bg-white p-5 shadow-sm;
+    }
+
+    .effect-group h3 {
+      @apply mb-4 text-lg font-semibold text-slate-900;
+    }
+
+    .control-label {
+      @apply mb-2 block text-sm font-medium text-slate-700;
+    }
+
+    .text-input {
+      @apply w-full rounded-lg border border-slate-300 px-3 py-2 text-sm;
+    }
+
+    .effect-group input[type="range"] {
+      @apply w-full cursor-pointer accent-slate-900;
+    }
+
+    .effect-group:has(:disabled) {
+      @apply opacity-50;
+    }
+
+    .export-button {
+      @apply rounded-lg bg-slate-900 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-700;
+    }
+  </style>
+
+  <!-- Dedicated dynamic effects and color stylesheet -->
+  <style id="hero-effects">
+    .hero {
+      background-color: var(--color-slate-50);
+    }
+    .hero h1 {
+      letter-spacing: -0.05em;
+      color: var(--color-slate-900);
+    }
+    .hero h2 {
+      letter-spacing: -0.025em;
+      color: var(--color-slate-700);
+    }
+  </style>
+</head>
+
+<body class="bg-slate-100">
+
+  <!-- Editor controls -->
+  <section class="control-panel">
+
+    <div class="flex items-center justify-between">
+      <h1 class="text-2xl font-bold text-slate-900">
+        Hero Section Editor
+      </h1>
+      <label class="flex items-center gap-2 text-sm font-medium text-slate-700">
+        <input id="darkPreset" type="checkbox" class="rounded border-slate-300 text-slate-900 focus:ring-slate-900">
+        Dark appearance preset
+      </label>
+    </div>
+
+    <!-- Color Palette Control Group -->
+    <div class="effect-group">
+      <h3>Color Palette</h3>
+
+      <!-- Target selector buttons & active indicator -->
+      <div class="mb-5 flex flex-wrap items-center gap-2 border-b border-slate-100 pb-4">
+        <span class="text-sm font-medium text-slate-700 mr-2">Target:</span>
+        <button id="targetBg" type="button" class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-900 bg-slate-900 text-white transition-colors">Background</button>
+        <button id="targetH1" type="button" class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 transition-colors">H1</button>
+        <button id="targetH2" type="button" class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 transition-colors">H2</button>
+        <span id="activeColorDisplay" class="ml-auto text-xs font-medium text-slate-600">Active: Background (slate-50)</span>
+      </div>
+
+      <!-- Scrollable palette grid container -->
+      <div class="overflow-x-auto pb-2">
+        <div class="min-w-[760px] space-y-1.5" id="paletteContainer">
+          <!-- Rendered dynamically via script -->
+        </div>
+      </div>
+    </div>
+
+    <!-- H1 text -->
+    <div class="effect-group">
+      <h3>H1 Heading</h3>
+
+      <label class="control-label" for="h1Text">
+        Heading text
+      </label>
+
+      <input
+        id="h1Text"
+        class="text-input mb-5"
+        type="text"
+        value="Lorem ipsum dolor sit amet"
+      >
+
+      <label class="flex items-center gap-2 text-sm text-slate-700">
+        <input id="h1Serif" type="checkbox">
+        Serif font
+      </label>
+
+      <div class="mt-5">
+        <label class="control-label" for="h1Spacing">
+          Letter spacing
+        </label>
+
+        <div class="flex items-center gap-4">
+          <input
+            id="h1Spacing"
+            type="range"
+            min="-0.05"
+            max="0.10"
+            step="0.005"
+            value="-0.05"
+          >
+
+          <output
+            id="h1SpacingValue"
+            class="min-w-20 text-right text-sm font-semibold tabular-nums"
+          >-0.05em</output>
+        </div>
+      </div>
+    </div>
+
+    <!-- H2 text -->
+    <div class="effect-group">
+      <h3>H2 Subheading</h3>
+
+      <label class="flex items-center gap-2 text-sm text-slate-700 mb-4">
+        <input id="showH2" type="checkbox" checked>
+        Show subheading
+      </label>
+
+      <label class="control-label" for="h2Text">
+        Subheading text
+      </label>
+
+      <input
+        id="h2Text"
+        class="text-input mb-5"
+        type="text"
+        value="Consectetur adipiscing elit. Integer vitae libero ac risus egestas placerat."
+      >
+
+      <label class="flex items-center gap-2 text-sm text-slate-700">
+        <input id="h2Serif" type="checkbox">
+        Serif font
+      </label>
+
+      <div class="mt-5">
+        <label class="control-label" for="h2Spacing">
+          Letter spacing
+        </label>
+
+        <div class="flex items-center gap-4">
+          <input
+            id="h2Spacing"
+            type="range"
+            min="-0.05"
+            max="0.10"
+            step="0.005"
+            value="-0.025"
+          >
+
+          <output
+            id="h2SpacingValue"
+            class="min-w-20 text-right text-sm font-semibold tabular-nums"
+          >-0.025em</output>
+        </div>
+      </div>
+    </div>
+
+    <button id="exportButton" class="export-button" type="button">
+      Export HTML
+    </button>
+
+  </section>
+
+  <!-- Hero preview -->
+  <header class="hero hero-centre hero-min-height">
+    <div class="hero-content">
+      <h1 id="heroH1" class="hero-h1-sans">
+        Lorem ipsum dolor sit amet
+      </h1>
+
+      <h2 id="heroH2" class="hero-h2-sans">
+        Consectetur adipiscing elit. Integer vitae libero ac risus egestas placerat.
+      </h2>
+    </div>
+  </header>
+
+  <script>
+    // Central settings object.
+    const settings = {
+      background: {
+        color: "slate-50"
+      },
+      h1: {
+        serif: false,
+        letterSpacing: -0.05,
+        text: "Lorem ipsum dolor sit amet",
+        color: "slate-900"
+      },
+      h2: {
+        serif: false,
+        letterSpacing: -0.025,
+        text: "Consectetur adipiscing elit. Integer vitae libero ac risus egestas placerat.",
+        visible: true,
+        color: "slate-700"
+      },
+      darkPreset: false
+    };
+
+    let activeTarget = "background"; // 'background', 'h1', or 'h2'
+
+    const colorFamilies = [
+      { name: 'slate', label: 'Slate' },
+      { name: 'gray', label: 'Gray' },
+      { name: 'zinc', label: 'Zinc' },
+      { name: 'neutral', label: 'Neutral' },
+      { name: 'stone', label: 'Stone' },
+      { name: 'red', label: 'Red' },
+      { name: 'orange', label: 'Orange' },
+      { name: 'amber', label: 'Amber' },
+      { name: 'yellow', label: 'Yellow' },
+      { name: 'lime', label: 'Lime' },
+      { name: 'green', label: 'Green' },
+      { name: 'emerald', label: 'Emerald' },
+      { name: 'teal', label: 'Teal' },
+      { name: 'cyan', label: 'Cyan' },
+      { name: 'sky', label: 'Sky' },
+      { name: 'blue', label: 'Blue' },
+      { name: 'indigo', label: 'Indigo' },
+      { name: 'violet', label: 'Violet' },
+      { name: 'purple', label: 'Purple' },
+      { name: 'fuchsia', label: 'Fuchsia' },
+      { name: 'pink', label: 'Pink' },
+      { name: 'rose', label: 'Rose' },
+      { name: 'black', label: 'Black', isSpecial: true },
+      { name: 'white', label: 'White', isSpecial: true }
+    ];
+
+    const shades = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950'];
+
+    const elements = {
+      h1Text: document.getElementById("h1Text"),
+      h2Text: document.getElementById("h2Text"),
+      h1Serif: document.getElementById("h1Serif"),
+      h2Serif: document.getElementById("h2Serif"),
+      h1Spacing: document.getElementById("h1Spacing"),
+      h2Spacing: document.getElementById("h2Spacing"),
+      h1SpacingValue: document.getElementById("h1SpacingValue"),
+      h2SpacingValue: document.getElementById("h2SpacingValue"),
+      showH2: document.getElementById("showH2"),
+      darkPreset: document.getElementById("darkPreset"),
+      heroH1: document.getElementById("heroH1"),
+      heroH2: document.getElementById("heroH2"),
+      h2Group: document.querySelectorAll(".effect-group")[2],
+      effectsStyle: document.getElementById("hero-effects"),
+      exportButton: document.getElementById("exportButton"),
+      paletteContainer: document.getElementById("paletteContainer"),
+      targetBg: document.getElementById("targetBg"),
+      targetH1: document.getElementById("targetH1"),
+      targetH2: document.getElementById("targetH2"),
+      activeColorDisplay: document.getElementById("activeColorDisplay")
+    };
+
+    // Build Palette UI Grid
+    function buildPalette() {
+      // Header row for shades
+      let html = `<div class="grid grid-cols-[110px_repeat(11,minmax(28px,1fr))_60px] gap-1 items-center text-xs font-semibold text-slate-400 mb-2 px-1">
+        <div>Family</div>`;
+      shades.forEach(shade => {
+        html += `<div class="text-center">${shade}</div>`;
+      });
+      html += `<div class="text-center">Solid</div></div>`;
+
+      // Family rows
+      colorFamilies.forEach(family => {
+        html += `<div class="grid grid-cols-[110px_repeat(11,minmax(28px,1fr))_60px] gap-1 items-center">`;
+        html += `<div class="text-xs font-medium text-slate-700">${family.label}</div>`;
+
+        if (family.isSpecial) {
+          // Render special row (black or white spanning or single column)
+          for (let i = 0; i < 11; i++) {
+            html += `<div></div>`;
+          }
+          const colorName = family.name;
+          html += `<div class="flex justify-center">
+            <button type="button"
+              data-color="${colorName}"
+              aria-label="${family.label}"
+              tabindex="0"
+              class="w-7 h-7 rounded-md border border-slate-300 shadow-xs transition-transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2"
+              style="background-color: var(--color-${colorName});">
+            </button>
+          </div>`;
+        } else {
+          shades.forEach(shade => {
+            const colorName = `${family.name}-${shade}`;
+            html += `<div class="flex justify-center">
+              <button type="button"
+                data-color="${colorName}"
+                aria-label="${family.label} ${shade}"
+                tabindex="0"
+                class="w-7 h-7 rounded-md border border-slate-200/60 shadow-xs transition-transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2"
+                style="background-color: var(--color-${colorName});">
+              </button>
+            </div>`;
+          });
+          html += `<div></div>`; // empty cell to align grid
+        }
+        html += `</div>`;
+      });
+
+      elements.paletteContainer.innerHTML = html;
+
+      // Attach event listeners to all swatches
+      elements.paletteContainer.querySelectorAll("button[data-color]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const selectedColor = btn.getAttribute("data-color");
+          applyColorToActiveTarget(selectedColor);
+        });
+        btn.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            const selectedColor = btn.getAttribute("data-color");
+            applyColorToActiveTarget(selectedColor);
+          }
+        });
+      });
+
+      updatePaletteSelectionState();
+    }
+
+    function applyColorToActiveTarget(colorName) {
+      if (activeTarget === "background") {
+        settings.background.color = colorName;
+      } else if (activeTarget === "h1") {
+        settings.h1.color = colorName;
+      } else if (activeTarget === "h2") {
+        settings.h2.color = colorName;
+      }
+      updateEffectsCSS();
+      updatePaletteSelectionState();
+      updateActiveDisplay();
+    }
+
+    function updatePaletteSelectionState() {
+      elements.paletteContainer.querySelectorAll("button[data-color]").forEach(btn => {
+        const btnColor = btn.getAttribute("data-color");
+        const activeColor = activeTarget === "background" ? settings.background.color :
+                            activeTarget === "h1" ? settings.h1.color : settings.h2.color;
+
+        if (btnColor === activeColor) {
+          btn.classList.add("ring-2", "ring-slate-900", "ring-offset-2", "scale-105");
+        } else {
+          btn.classList.remove("ring-2", "ring-slate-900", "ring-offset-2", "scale-105");
+        }
+      });
+    }
+
+    function updateActiveDisplay() {
+      const activeColor = activeTarget === "background" ? settings.background.color :
+                          activeTarget === "h1" ? settings.h1.color : settings.h2.color;
+      elements.activeColorDisplay.textContent = `Active: ${activeTarget.charAt(0).toUpperCase() + activeTarget.slice(1)} (${activeColor})`;
+    }
+
+    function setActiveTarget(target) {
+      if (target === 'h2' && !settings.h2.visible) return;
+      activeTarget = target;
+
+      // Update target button styles
+      [elements.targetBg, elements.targetH1, elements.targetH2].forEach(btn => {
+        btn.className = "px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 transition-colors";
+      });
+
+      const activeBtn = target === 'background' ? elements.targetBg :
+                        target === 'h1' ? elements.targetH1 : elements.targetH2;
+      
+      activeBtn.className = "px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-900 bg-slate-900 text-white transition-colors";
+
+      updatePaletteSelectionState();
+      updateActiveDisplay();
+    }
+
+    elements.targetBg.addEventListener("click", () => setActiveTarget("background"));
+    elements.targetH1.addEventListener("click", () => setActiveTarget("h1"));
+    elements.targetH2.addEventListener("click", () => setActiveTarget("h2"));
+
+    // Format values without unnecessary trailing zeros.
+    function formatEm(value) {
+      return `${Number(value.toFixed(3))}em`;
+    }
+
+    // Update the dedicated CSS stylesheet.
+    function updateEffectsCSS() {
+      elements.effectsStyle.textContent = `
+        .hero {
+          background-color: var(--color-${settings.background.color});
+        }
+        .hero h1 {
+          letter-spacing: ${formatEm(settings.h1.letterSpacing)};
+          color: var(--color-${settings.h1.color});
+        }
+        .hero h2 {
+          letter-spacing: ${formatEm(settings.h2.letterSpacing)};
+          color: var(--color-${settings.h2.color});
+        }
+      `;
+    }
+
+    // Update font classes independently.
+    function updateFonts() {
+      elements.heroH1.classList.toggle(
+        "hero-h1-serif",
+        settings.h1.serif
+      );
+
+      elements.heroH1.classList.toggle(
+        "hero-h1-sans",
+        !settings.h1.serif
+      );
+
+      elements.heroH2.classList.toggle(
+        "hero-h2-serif",
+        settings.h2.serif
+      );
+
+      elements.heroH2.classList.toggle(
+        "hero-h2-sans",
+        !settings.h2.serif
+      );
+    }
+
+    // Update subheading visibility and control availability.
+    function updateH2Visibility() {
+      settings.h2.visible = elements.showH2.checked;
+
+      elements.heroH2.hidden = !settings.h2.visible;
+
+      elements.h2Group.querySelectorAll("input").forEach(input => {
+        input.disabled = !settings.h2.visible;
+      });
+
+      if (!settings.h2.visible) {
+        elements.targetH2.disabled = true;
+        elements.targetH2.classList.add('opacity-50', 'cursor-not-allowed');
+        if (activeTarget === 'h2') {
+          setActiveTarget('background');
+        }
+      } else {
+        elements.targetH2.disabled = false;
+        elements.targetH2.classList.remove('opacity-50', 'cursor-not-allowed');
+      }
+    }
+
+    // Dark appearance preset change handler
+    elements.darkPreset.addEventListener("change", event => {
+      settings.darkPreset = event.target.checked;
+      if (settings.darkPreset) {
+        settings.background.color = "slate-900";
+        settings.h1.color = "slate-50";
+        settings.h2.color = "slate-300";
+      } else {
+        settings.background.color = "slate-50";
+        settings.h1.color = "slate-900";
+        settings.h2.color = "slate-700";
+      }
+      updateEffectsCSS();
+      updatePaletteSelectionState();
+      updateActiveDisplay();
+    });
+
+    // H1 text
+    elements.h1Text.addEventListener("input", event => {
+      settings.h1.text = event.target.value;
+      elements.heroH1.textContent = settings.h1.text;
+    });
+
+    // H2 text
+    elements.h2Text.addEventListener("input", event => {
+      settings.h2.text = event.target.value;
+      elements.heroH2.textContent = settings.h2.text;
+    });
+
+    // H1 serif font
+    elements.h1Serif.addEventListener("change", event => {
+      settings.h1.serif = event.target.checked;
+      updateFonts();
+    });
+
+    // H2 serif font
+    elements.h2Serif.addEventListener("change", event => {
+      settings.h2.serif = event.target.checked;
+      updateFonts();
+    });
+
+    // H1 letter spacing
+    elements.h1Spacing.addEventListener("input", event => {
+      settings.h1.letterSpacing = Number(event.target.value);
+
+      elements.h1SpacingValue.textContent =
+        formatEm(settings.h1.letterSpacing);
+
+      updateEffectsCSS();
+    });
+
+    // H2 letter spacing
+    elements.h2Spacing.addEventListener("input", event => {
+      settings.h2.letterSpacing = Number(event.target.value);
+
+      elements.h2SpacingValue.textContent =
+        formatEm(settings.h2.letterSpacing);
+
+      updateEffectsCSS();
+    });
+
+    // Toggle H2 visibility without resetting its settings or text.
+    elements.showH2.addEventListener("change", updateH2Visibility);
+
+    // Export standalone HTML.
+    function exportHTML() {
+      const h1Text = escapeHTML(settings.h1.text);
+      const h2Text = escapeHTML(settings.h2.text);
+
+      const h1FontClass = settings.h1.serif
+        ? "hero-h1-serif"
+        : "hero-h1-sans";
+
+      const h2FontClass = settings.h2.serif
+        ? "hero-h2-serif"
+        : "hero-h2-sans";
+
+      const h2Visibility = settings.h2.visible ? "" : " hidden";
+
+      const effectsCSS = `
+        .hero {
+          background-color: var(--color-${settings.background.color});
+        }
+        .hero h1 {
+          letter-spacing: ${formatEm(settings.h1.letterSpacing)};
+          color: var(--color-${settings.h1.color});
+        }
+        .hero h2 {
+          letter-spacing: ${formatEm(settings.h2.letterSpacing)};
+          color: var(--color-${settings.h2.color});
+        }
+      `;
+
+      const exportedHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Custom hero section">
+  <title>My Hero Section</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"><\/script>
+
+  <style type="text/tailwindcss">
+    .hero {
+      @apply flex items-center justify-center px-6 py-16 md:px-12 md:py-24;
+    }
+
+    .hero-content {
+      @apply w-full max-w-5xl;
+    }
+
+    .hero h1 {
+      @apply text-4xl font-bold leading-tight tracking-tight sm:text-5xl md:text-6xl;
+      overflow-wrap: anywhere;
+    }
+
+    .hero h2 {
+      @apply mt-6 max-w-3xl text-lg leading-relaxed sm:text-xl md:text-2xl;
+      overflow-wrap: anywhere;
+    }
+
+    .hero-centre .hero-content {
+      @apply mx-auto text-center;
+    }
+
+    .hero-centre h1,
+    .hero-centre h2 {
+      @apply mx-auto text-center;
+    }
+
+    .hero-min-height {
+      @apply min-h-[480px] md:min-h-[85vh];
+    }
+
+    .hero-h1-sans {
+      @apply font-sans;
+    }
+
+    .hero-h1-serif {
+      @apply font-serif;
+    }
+
+    .hero-h2-sans {
+      @apply font-sans;
+    }
+
+    .hero-h2-serif {
+      @apply font-serif;
+    }
+  </style>
+
+  <style id="hero-effects">
+${effectsCSS}
+  </style>
+</head>
+<body>
+  <header class="hero hero-centre hero-min-height">
+    <div class="hero-content">
+      <h1 class="${h1FontClass}">${h1Text}</h1>
+      <h2 class="${h2FontClass}"${h2Visibility}>${h2Text}</h2>
+    </div>
+  </header>
+</body>
+</html>`;
+
+      const blob = new Blob([exportedHTML], {
+        type: "text/html;charset=utf-8"
+      });
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = "hero-section.html";
+      link.click();
+
+      URL.revokeObjectURL(url);
+    }
+
+    // Escape user-entered text before inserting it into exported HTML.
+    function escapeHTML(value) {
+      return String(value).replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[character]);
+    }
+
+    elements.exportButton.addEventListener("click", exportHTML);
+
+    // Initialise preview.
+    buildPalette();
+    updateFonts();
+    updateEffectsCSS();
+    updateH2Visibility();
+    updateActiveDisplay();
+  </script>
+
+</body>
+</html>
